@@ -1,0 +1,100 @@
+const inputPhone = $("input[name=phone]");
+const inputName = $("#order_form_name-input");
+const inputPhoneList = document.querySelectorAll('input[name=phone]');
+
+const handleLastCharater = (customState, input, e) => {
+    // last character match ')', '(', ' '
+    const isMatchLastCharacter = /[(,), ]/.test(input.value[input.value.length - 1]);
+    const isRemoveCharacterAction = e.originalEvent.inputType === 'deleteContentBackward';
+
+    // maximum 10 characters
+    const isCorrectLength = /^[0-9]{0,10}$/g.test(customState);
+
+    if (!isCorrectLength || (isRemoveCharacterAction && isMatchLastCharacter)) {
+        return customState.slice(0, -1);
+    };
+
+    return customState;
+}
+
+const handlePhoneValidation = () => {
+    const button = $('#order_form_button');
+
+    // ===== Поле Телефон =====
+    const input = $('#order_form_phone-input');
+    let customState = '';
+
+    customState = input.val().replace(/[^\d]/g, '');
+
+    const isNotFirstCharacter = customState.length > 1;
+
+    if (isNotFirstCharacter) {
+        customState = customState.slice(2);
+    };
+
+    // customState = handleLastCharater(customState, input);
+    const isCorrectLength = customState?.length >= 10;
+    // ===== Поле Телефон конец =====
+
+    // ===== Поле Имя =====
+    const inputName = $('#order_form_name-input');
+    const isCorrectInputName = inputName.val() || '';
+    // ===== Поле Имя Конец =====
+
+    if (!isCorrectInputName) {
+        button.prop('disabled', true);
+        button.css('cursor', 'not-allowed');
+        button.css('background-image', '#dedede');
+        button.css('background', '#dedede');
+        button.css('border', '1px solid red');
+
+        inputName.css('border-color', 'red');
+        return;
+    } else {
+        inputName.css('border-color', '#dedede');
+    }
+
+    if (!isCorrectLength) {
+        button.prop('disabled', true);
+        button.css('cursor', 'not-allowed');
+        button.css('background-image', '#dedede');
+        button.css('background', '#dedede');
+        button.css('border', '1px solid red');
+
+        input.css('border-color', 'red');
+        return;
+    } else {
+        input.css('border-color', '#dedede');
+    };
+
+    button.prop('disabled', false);
+    button.css('background-image', 'linear-gradient(to bottom, #ffba00, #ff8a00)');
+    button.css('background', '#ffa900');
+    button.css('border', 'none');
+    button.css('border-bottom', '4px solid #d97400');
+    button.css('cursor', 'pointer');
+
+    inputName.css('border-color', '#dedede');
+    input.css('border-color', '#dedede');
+}
+
+inputPhone.on('input', (e) => { handlePhoneValidation(); });
+inputName.on('input', (e) => { handlePhoneValidation(); });
+
+(function disabledButton() {
+    const button = $('#order_form_button');
+
+    button.prop('disabled', true);
+    button.css('cursor', 'not-allowed');
+    button.css('background-image', '#dedede');
+    button.css('background', '#dedede');
+    button.css('border', '1px solid red');
+
+})();
+
+const maskOptions = {
+    mask: '+{38} (000) 000-00-00',
+    lazy: false,
+}
+
+inputPhoneList.forEach(item => new IMask(item, maskOptions));
